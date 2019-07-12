@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        main {
+            padding: 100px;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        td {
+            /* align-content: center; */
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .cell {
+            border: 1px solid black;
+            height: 70px;
+            width: 70px;
+            padding: 10px;
+            font-size: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        table tr:first-child td {
+            border-top: none;
+        }
+        
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr td:first-child {
+            border-left: none;
+        }
+        
+        tr td:last-child {
+            border-right: none;
+        }
+        
+        #result {
+            margin: 20px;
+            height: 50px;
+            width: auto;
+        }
+        
+        .register>input,
+        .register>input:focus {
+            border: none;
+            border-bottom: 1px solid black;
+            box-shadow: none;
+            outline: none;
+            padding: 10px;
+        }
+        
+        .register>button {
+            margin: 5px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <!-- <section class="register">
+            <input type="text" name="" id="name" placeholder="enter name">
+            <button id="X" onclick="show()">X</button>
+            <button id="O" onclick="show()">O</button>
+        </section> -->
+        <table>
+            <tr>
+                <td class="cell" id="0" onclick="selectme(this.id)"></td>
+                <td class="cell" id="1" onclick="selectme(this.id)"></td>
+                <td class="cell" id="2" onclick="selectme(this.id)"></td>
+            </tr>
+            <tr>
+                <td class="cell" id="3" onclick="selectme(this.id)"></td>
+                <td class="cell" id="4" onclick="selectme(this.id)"></td>
+                <td class="cell" id="5" onclick="selectme(this.id)"></td>
+            </tr>
+            <tr>
+                <td class="cell" id="6" onclick="selectme(this.id)"></td>
+                <td class="cell" id="7" onclick="selectme(this.id)"></td>
+                <td class="cell" id="8" onclick="selectme(this.id)"></td>
+            </tr>
+        </table>
+        <div id="result">
+
+        </div>
+    </main>
+</body>
+<script>
+    var myplayer = function(name, choice) {
+        this.name = name;
+        this.choice = choice;
+    }
+    var won = false;
+    let computer = new myplayer("JARVIS", "O");
+    let player = new myplayer("AKSHAY", "X");
+
+    var board = [];
+    var mycell = function(myindex, sym) {
+        this.myindex = myindex;
+        this.sym = sym;
+    }
+    var computerwin, computerdefend;
+
+    function play(myid) {
+
+        document.getElementById(myid).innerText = player.choice;
+        var putvalue = function() {
+            let index;
+            for (index = 0; index < 9; index++) {
+                board[index] = new mycell(index, document.getElementById(index).innerText);
+                document.getElementById(index).style.backgroundColor = "";
+            }
+        }
+        var isfilled = function() {
+            let l, cou = 0;
+            for (l = 0; l < board.length; l++) {
+                if (board[l].sym == player.choice || board[l].sym == computer.choice) {
+                    cou++;
+                }
+
+            }
+            if (cou == 9) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        var checkwin = function() {
+            putvalue();
+            var winSet = [
+                [board[0], board[1], board[2]],
+                [board[3], board[4], board[5]],
+                [board[6], board[7], board[8]],
+                [board[0], board[3], board[6]],
+                [board[1], board[4], board[7]],
+                [board[2], board[5], board[8]],
+                [board[0], board[4], board[8]],
+                [board[2], board[4], board[6]]
+            ];
+            winSet.forEach(myFunction);
+            var temp = "";
+
+            function myFunction(value, index, array) {
+                temp = "";
+                value.forEach(myinnerfunc);
+                if (temp == computer.choice + computer.choice + computer.choice || temp == player.choice + player.choice + player.choice) {
+                    console.log("x won");
+                    won = true;
+                    if (temp.startsWith(computer.choice)) {
+                        document.getElementById('result').innerText = computer.name + " has won";
+                    } else {
+                        document.getElementById('result').innerText = player.name + " has won";
+                    }
+                    value.forEach(winner);
+                }
+                if (temp == player.choice + player.choice) {
+                    value.forEach(winsuggestion);
+                }
+                if (temp == computer.choice + computer.choice) {
+                    value.forEach(playerdefendsuggestion);
+                }
+
+                function winner(value) {
+                    document.getElementById(value.myindex).style.backgroundColor = "lightgreen";
+                }
+
+                function winsuggestion(value, index1, array) {
+                    if (value.sym != player.choice) {
+                        document.getElementById(value.myindex).style.backgroundColor = "cyan";
+                        computerdefend = value.myindex;
+                    }
+                }
+
+                function playerdefendsuggestion(value, index1, array) {
+                    if (value.sym != computer.choice) {
+                        document.getElementById(value.myindex).style.backgroundColor = "tomato";
+                        computerwin = value.myindex;
+                    }
+                }
+
+                function myinnerfunc(value) {
+                    temp += value.sym;
+                }
+
+            }
+        }
+        checkwin();
+        putvalue();
+        if (!isfilled() && !won) {
+            computerturn();
+        } else {
+            checkwin();
+        }
+
+
+
+        function computerturn() {
+            if (computerwin != null && document.getElementById(computerwin).innerText == "") {
+                document.getElementById(computerwin).innerText = computer.choice;
+                computerwin = null;
+
+            } else if (computerdefend != null && document.getElementById(computerdefend).innerText == "") {
+                document.getElementById(computerdefend).innerText = computer.choice;
+                computerdefend = null;
+            } else {
+                var flag = false;
+                do {
+                    var k = Math.floor((Math.random() * 8)) + 0;
+                    console.log(k);
+                    if (document.getElementById(k).innerText == "") {
+                        flag = true;
+                        document.getElementById(k).innerText = computer.choice;
+                    }
+                } while (flag == false);
+            }
+            putvalue();
+            checkwin();
+        }
+    }
+
+    function selectme(myid) {
+        if (!won) {
+            if (document.getElementById(myid).innerText == "") {
+                play(myid);
+            } else {
+                alert("already selected");
+            }
+        } else {
+            alert("game over");
+        }
+    }
+</script>
+
+</html>
