@@ -8,7 +8,7 @@
     <title>Document</title>
     <style>
         main {
-            padding: 100px;
+            padding: 50px;
         }
         
         table {
@@ -16,7 +16,6 @@
         }
         
         td {
-            /* align-content: center; */
             text-align: center;
             vertical-align: middle;
         }
@@ -27,7 +26,7 @@
             width: 70px;
             padding: 10px;
             font-size: 50px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: cursive;
         }
         
         table tr:first-child td {
@@ -48,8 +47,10 @@
         
         #result {
             margin: 20px;
-            height: 50px;
+            height: auto;
             width: auto;
+            font-size: 25px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .register>input,
@@ -105,7 +106,6 @@
     var won = false;
     let computer = new myplayer("JARVIS", "O");
     let player = new myplayer("AKSHAY", "X");
-
     var board = [];
     var mycell = function(myindex, sym) {
         this.myindex = myindex;
@@ -159,9 +159,9 @@
                     console.log("x won");
                     won = true;
                     if (temp.startsWith(computer.choice)) {
-                        document.getElementById('result').innerText = computer.name + " has won";
+                        document.getElementById('result').innerText = "{\n \"name\" : \"" + computer.name + "\",\n \"hasWon\" : \"true\"\n }";
                     } else {
-                        document.getElementById('result').innerText = player.name + " has won";
+                        document.getElementById('result').innerText = "{\n \"name\" : \"" + player.name + "\",\n \"hasWon\" : \"true\"\n }";
                     }
                     value.forEach(winner);
                 }
@@ -173,12 +173,13 @@
                 }
 
                 function winner(value) {
-                    document.getElementById(value.myindex).style.backgroundColor = "lightgreen";
+                    document.getElementById(value.myindex).style.backgroundColor = "";
+                    document.getElementById(value.myindex).style.color = "lime";
                 }
 
                 function winsuggestion(value, index1, array) {
                     if (value.sym != player.choice) {
-                        document.getElementById(value.myindex).style.backgroundColor = "cyan";
+                        document.getElementById(value.myindex).style.backgroundColor = "aqua";
                         computerdefend = value.myindex;
                     }
                 }
