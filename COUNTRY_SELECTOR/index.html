@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 500;
+        }
+        
+        form {
+            padding: 50px;
+            text-align: center;
+        }
+        
+        #ans {
+            height: 30px;
+            width: 100%;
+        }
+        
+        select {
+            min-width: 200px;
+        }
+        
+        select#states {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <section>
+            <section id="ans">
+                <span id="selectedcountry"></span> /
+                <span id="selectedstate"></span>
+            </section>
+            <select id="country">
+            <option selected disabled>Select Country</option>
+            </select>
+            <select id="states">
+            </select>
+        </section>
+    </form>
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        var list = {};
+        $('#states').hide();
+        $('#country').show();
+
+        var countryList;
+        $.ajax({
+            url: "list.json",
+            method: "get",
+            success: function(result) {
+                countryList = result.countries;
+                selectcountry(countryList);
+            },
+            error: function(result) {
+
+            }
+        });
+        $('#ans').children('span').on({
+            mouseenter: function() {
+                $(this).css({
+                    "color": "blue"
+                })
+            },
+            mouseleave: function() {
+                $(this).css({
+                    "color": "black"
+                })
+            }
+        });
+        $('#selectedcountry').on('click', function() {
+            $('#selectedcountry').text("");
+            $('#selectedstate').text("");
+            selectcountry(countryList);
+
+        });
+
+        function selectcountry(countryList) {
+            $('#country').show();
+            $('#states').hide();
+            for (let index = 0; index < countryList.length; index++) {
+                var element = countryList[index];
+                list[element.country] = element.states;
+                $('#country').append("<option values=" + element.country + ">" + element.country + "</option>");
+            }
+        }
+        $('#country').on('change', function() {
+            $('#selectedcountry').text($(this).val());
+            $('#states').empty().append("<option selected disabled>Select state</option>").show();
+            var stateList = list[$(this).val()];
+            for (let index = 0; index < stateList.length; index++) {
+                const element = stateList[index];
+                $('#states').append("<option values=" + element + ">" + element + "</option>");
+            }
+            $('#country').hide();
+        });
+        $('#states').on('change', function() {
+            $('#selectedstate').text($(this).val());
+        });
+    });
+</script>
+
+</html>
