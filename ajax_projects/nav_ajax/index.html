@@ -59,9 +59,7 @@
         });
 
         function linkDeco(link) {
-            $('nav').children().each(function(index, element) {
-                element.classList.remove('active');
-            });
+            $('nav a').filter('.active').removeClass('active');
             link.addClass('active');
         }
     });
