@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        
+        a.active {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="about.html">about</a>
+            <a href="service.html">service</a>
+            <a href="contact.html">contact</a>
+        </nav>
+    </header>
+    <main>
+
+    </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        main = $('main');
+        nav = $('nav a');
+        $.ajax({
+            url: 'home.html',
+            method: 'get',
+            success: function(result) {
+                main.html(result);
+            }
+        });
+
+        nav.on('click', function() {
+            event.preventDefault();
+            $.ajax({
+                url: $(this).attr('href'),
+                method: 'get',
+                success: function(result) {
+                    main.html(result);
+                }
+            });
+
+            linkDeco($(this));
+
+        });
+
+        function linkDeco(link) {
+            $('nav').children().each(function(index, element) {
+                element.classList.remove('active');
+            });
+            link.addClass('active');
+        }
+    });
+</script>
+
+</html>
